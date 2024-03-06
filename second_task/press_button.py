@@ -8,11 +8,10 @@ class Window(QMainWindow):
         self.setWindowTitle("You won't be able to click on me.")
 
         self.label = QLabel("Кнопка Отпущена", self)
-        self.label.setFixedSize(300, 50)
         font = QFont("Times", 20)
         font.setBold(True)
         self.label.setFont(font)
-        self.label.setGeometry(190, 100, self.width(), self.height())
+        self.label.setGeometry(190, 0, self.width(), self.height())
 
         self.btn = QPushButton(self)
         self.btn.setCheckable(True)

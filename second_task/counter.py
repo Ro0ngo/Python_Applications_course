@@ -1,4 +1,4 @@
-from PySide6.QtGui import Qt
+from PySide6.QtGui import Qt, QFont
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget
 
 
@@ -11,6 +11,9 @@ class CounterApp(QMainWindow):
 
         self.label = QLabel(str(self.counter), self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        font = QFont("Times", 20)
+        font.setBold(True)
+        self.label.setFont(font)
 
         increase_button = QPushButton("Увеличить", self)
         increase_button.clicked.connect(self.increase_counter)
