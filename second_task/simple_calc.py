@@ -1,3 +1,4 @@
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, \
     QLineEdit
 from PySide6.QtCore import Qt
@@ -38,6 +39,9 @@ class CalculatorApp(QMainWindow):
         button_layout.addWidget(power_button)
 
         self.result_label = QLabel("", self)
+        font = QFont("Times", 20)
+        font.setBold(True)
+        self.result_label.setFont(font)
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         main_layout = QVBoxLayout()
@@ -55,18 +59,19 @@ class CalculatorApp(QMainWindow):
         num1 = int(self.num1_input.text())
         num2 = int(self.num2_input.text())
 
-        if operation == '+':
-            result = num1 + num2
-            operation_str = "+"
-        elif operation == '-':
-            result = num1 - num2
-            operation_str = "-"
-        elif operation == '*':
-            result = num1 * num2
-            operation_str = "*"
-        elif operation == '/':
-            result = num1 / num2
-            operation_str = "/"
+        match operation:
+            case "*":
+                result = num1 * num2
+                operation_str = "*"
+            case "+":
+                result = num1 + num2
+                operation_str = "+"
+            case "-":
+                result = num1 - num2
+                operation_str = "-"
+            case "/":
+                result = num1 / num2
+                operation_str = "/"
 
         self.result_label.setText(f"{num1} {operation_str} {num2} = {result}")
 
