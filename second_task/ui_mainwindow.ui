@@ -10,68 +10,52 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <bold>false</bold>
-   </font>
-  </property>
-  <property name="cursor">
-   <cursorShape>PointingHandCursor</cursorShape>
-  </property>
   <property name="windowTitle">
-   <string>You won't be able to click on me.</string>
+   <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>360</y>
-      <width>151</width>
-      <height>91</height>
+      <x>240</x>
+      <y>350</y>
+      <width>231</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>OCR A Extended</family>
-      <pointsize>12</pointsize>
-      <bold>false</bold>
-      <underline>false</underline>
-      <strikeout>false</strikeout>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid;
+border-radius: 7px;</string>
     </property>
     <property name="text">
-     <string>CLICK ME!!</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
+     <string>Только попробуй нажать</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>120</y>
-      <width>271</width>
-      <height>171</height>
+      <x>160</x>
+      <y>130</y>
+      <width>381</width>
+      <height>141</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>OCR A Extended</family>
-      <pointsize>28</pointsize>
-      <bold>false</bold>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
      </font>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgba(0, 255, 0, 60);</string>
     </property>
     <property name="text">
-     <string>released</string>
+     <string>Кнопка отжата</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
