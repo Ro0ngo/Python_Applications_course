@@ -1,0 +1,130 @@
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import java.io.File
+import java.time.LocalDateTime
+import kotlin.random.Random
+
+val franchises = listOf(
+    "Dota", "Hearthstone", "Munchkin", "Fallout",
+    "Dungeons & Dragons", "The game of monopoly",
+    "The game of Bunker", "Mafia game"
+)
+val hello = listOf(
+    "В программе нашего мероприятия вы найдете игры по таким популярным франшизам, как",
+    "У нас запланированы настольные игры, включая те, которые основаны на франшизах, таких как",
+    "Вас ждут увлекательные игры на нашем мероприятии, включая те, которые связаны с известными франшизами, например,",
+    "Присоединяйтесь к нам на мероприятии, где будет возможность поиграть в игры по таким франшизам, как",
+    "Мы приготовили для вас игры, вдохновленные популярными франшизами, включая"
+)
+
+val eventDescriptions = listOf(
+    """
+    ${hello.random()} ${franchises.random()}.
+    Приглашаем всех любителей настольных игр на наше мероприятие, где вы сможете насладиться игрой и общением в компании друзей, а также погрузиться в мир настольных версий ваших любимых фильмов. Присоединяйтесь к нам и окунитесь в атмосферу кино!
+    Мы гарантируем, что каждый участник нашего мероприятия будет наслаждаться игрой и времяпровождением.
+    """,
+    """
+    ${hello.random()} ${franchises.random()}.
+    Проведите выходной день в компании друзей на нашем мероприятии, где настольные игры встретятся с вашими любимыми фильмами! Мы гарантируем вам увлекательное времяпровождение и море позитива в компании единомышленников.
+    Вас ждут увлекательные игры и приятное времяпровождение.
+    """,
+    """
+    ${hello.random()} ${franchises.random()}.
+    Всех любителей настольных игр приглашаем на наше мероприятие, где вы сможете насладиться игрой и общением, а также узнать о настольных версиях ваших любимых фильмов. Присоединяйтесь к нам и окунитесь в атмосферу кинематографа!
+    Здесь вы сможете провести время в уютной атмосфере, играя в любимые игры.
+    """,
+    """
+    ${hello.random()} ${franchises.random()}.
+    Не упустите возможность окунуться в мир настольных игр на нашем увлекательном мероприятии! Здесь вы найдете много интересных игр и отличную компанию для общения, ведь мы гарантируем, что каждый участник нашего мероприятия будет наслаждаться игрой и общением с единомышленниками.
+    Приглашаем всех желающих на наше мероприятие!
+    """,
+    """
+    ${hello.random()} ${franchises.random()}, на нашем мероприятии.
+    Проведите время в компании друзей на нашем мероприятии по настольным играм! У нас вас ждут увлекательные игры и приятное времяпровождение, чтобы ваш день был наполнен радостью и весельем в компании друзей и единомышленников.
+    Ждем всех желающих на нашем настольном мероприятии!
+    """
+)
+
+data class Event(
+    val createTime: LocalDateTime,
+    val updateTime: LocalDateTime,
+    val eventDateTime: LocalDateTime,
+    val durationMinutes: Int,
+    val description: String,
+    val boardGames: List<BoardGame>
+)
+
+data class BoardGame(
+    val name: String,
+    val description: String,
+    val minPlayers: Int,
+    val maxPlayers: Int,
+    val playTimeMinutes: Int,
+    val minAge: String
+)
+
+fun generateEvent(): Event {
+    val createTime = LocalDateTime.now().plusDays(Random.nextLong(1,300)).plusMinutes(Random.nextLong(1, 60)).plusHours(Random.nextLong(1,24)).plusSeconds(Random.nextLong(1, 60))
+    val updateTime = createTime.plusMinutes(Random.nextLong(1, 1440)).plusSeconds(Random.nextLong(1, 60)).plusDays(Random.nextLong(1, 30))
+    val eventHour = Random.nextLong(10, 24)
+    val eventDate = updateTime.plusDays(Random.nextLong(1, 100))
+    val eventDateTime = LocalDateTime.of(eventDate.year, eventDate.month, eventDate.dayOfMonth, eventHour.toInt(), 0, 0)
+
+    val boardGames = List(Random.nextInt(1, 5)) {
+        val minPlayers = when (Random.nextInt(5)) {
+            0 -> 2
+            1 -> 5
+            2 -> 4
+            3 -> 3
+            else -> 8
+        }
+        val maxPlayers = when (Random.nextInt(5)) {
+            0 -> 4
+            1 -> 8
+            2 -> 7
+            3 -> 6
+            else -> 20
+        }
+
+        val playTimeOptions = listOf(30, 45, 60, 75, 90, 120)
+        val playTimeMinutes = playTimeOptions.random()
+
+        val minAge = when (Random.nextInt(4)) {
+            0 -> "6+"
+            1 -> "12+"
+            2 -> "16+"
+            else -> "18+"
+        }
+        BoardGame(
+            "Game ${it + 1}",
+            "Description for Game ${it + 1}",
+            minPlayers,
+            maxPlayers,
+            playTimeMinutes,
+            minAge
+        )
+    }
+    val totalPlayTime = boardGames.sumBy { it.playTimeMinutes }
+    val totalDurationMinutes = totalPlayTime + (boardGames.size - 1) * 5
+    return Event(createTime, updateTime, eventDateTime, totalDurationMinutes, eventDescriptions.random(), boardGames)
+}
+
+fun main() {
+
+    val events = List(1000) {
+        val event = generateEvent()
+        event
+    }
+
+    val objectMapper = ObjectMapper()
+        .registerModule(KotlinModule())
+        .registerModule(JavaTimeModule())
+    objectMapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT)
+
+    val jsonString = objectMapper.writeValueAsString(events)
+
+    File("events.json").writeText(jsonString)
+
+    println("Events data has been written to events.json")
+}

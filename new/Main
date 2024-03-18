@@ -1,0 +1,90 @@
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import io.pebbletemplates.pebble.PebbleEngine
+import java.io.File
+import java.io.StringWriter
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.time.LocalDateTime
+
+data class Event(
+    val createTime: LocalDateTime,
+    val updateTime: LocalDateTime,
+    val eventDateTime: LocalDateTime,
+    val durationMinutes: Int,
+    val description: String,
+    val boardGames: List<BoardGame>
+)
+
+data class BoardGame(
+    val name: String,
+    val description: String,
+    val minPlayers: Int,
+    val maxPlayers: Int,
+    val playTimeMinutes: Int,
+    val minAge: String
+)
+
+fun main() {
+
+    val dirPortal = "portal"
+    val resourcePath = "dataJson"
+    val dirCss = "portal/css"
+    val dirJs = "portal/js"
+    val dirEvent = "portal/event"
+
+    createDirectoryIfNotExists(dirPortal)
+    createDirectoryIfNotExists(dirCss)
+    createDirectoryIfNotExists(dirJs)
+    createDirectoryIfNotExists(dirEvent)
+
+
+    copyFolder(File("src/main/resources/css"), File("portal/css"))
+    copyFolder(File("src/main/resources/js"), File("portal/js"))
+
+    val objectMapper: ObjectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+    val events: List<Event> = objectMapper.readValue(File("$resourcePath/events.json"))
+
+    val engine = PebbleEngine.Builder().build()
+    val template = engine.getTemplate("src/main/resources/events.peb")
+    val homeTemplate = engine.getTemplate("src/main/resources/Home.peb")
+    val data = mapOf("events" to events)
+
+    val writerEvents = StringWriter()
+    template.evaluate(writerEvents, data)
+    File("$dirPortal/index.html").writeText(writerEvents.toString())
+
+    val writerHome = StringWriter()
+    homeTemplate.evaluate(writerHome, data)
+    File("$dirPortal/events.html").writeText(writerHome.toString())
+
+    for (i in events.indices){
+        val eventTemplate = engine.getTemplate("src/main/resources/Event.peb")
+        val eventData = mapOf("event" to events[i])
+        val writer = StringWriter()
+        eventTemplate.evaluate(writer, eventData)
+        File("$dirPortal/event/event-${i+1}.html").writeText(writer.toString())
+    }
+}
+
+fun createDirectoryIfNotExists(directoryPath: String): Boolean {
+    val directory = File(directoryPath)
+    return if (!directory.exists()) {
+        directory.mkdir()
+    } else {
+        true
+    }
+}
+
+
+fun copyFolder(source: File, destination: File) {
+
+    val files = source.listFiles() ?: return
+
+    for (file in files) {
+        val destPath = File(destination, file.name).toPath()
+        Files.copy(file.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING)
+    }
+}

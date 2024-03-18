@@ -1,0 +1,132 @@
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.*;
+
+public class HashMapTest {
+
+    HashMap<String, String> map = new HashMap<>();
+
+    /**
+     * Проверка, что значение добавляется
+     * Действия: создать map - экземпляр класса HashMap, добавить значение value с ключом key
+     * Ожидаемый результат: метод map.get(key) вернёт значение value
+     */
+
+    @ParameterizedTest
+    @CsvSource({"key1, value1",
+            "key2, value2",
+            "key3, value3"})
+    public void addValue(String line) {
+        map.put("key", line);
+        assertThat(map.get("key")).isEqualTo(line);
+    }
+
+    /**
+     * Проверка, что значение ключа можно изменять
+     * Действия: добавить элемент value1 методом map.put() с ключом "mapKey",
+     * добавить элемент value2 методом map.put()  ключом "mapKey"
+     * Ожидаемый результат: метод map.get("mapKey") вернёт значение value2
+     */
+
+    @Test
+    public void addNewValue() {
+        String mapKey = "bob";
+        map.put(mapKey, "value1");
+        map.put(mapKey, "value2");
+
+        assertThat(map.get(mapKey)).isEqualTo("value2");
+    }
+
+    /**
+     * Проверка, что мапу можно очистить
+     * Действия: добавить элемент mapValue с ключом mapKey, очистить методом map.clear()
+     * Ожидаемый результат: метод map.get(mapKey) вернёт null
+     */
+
+    @ParameterizedTest
+    @CsvSource({"key1, value1",
+            "key2, value2",
+            "key3, value3"})
+    public void clearValue(String mapKey, String mapValue) {
+        map.put(mapKey, mapValue);
+        map.clear();
+        assertThat(map.get(mapKey)).isNull();
+    }
+
+    /**
+     * Проверка, что ключом может быть null
+     * Действия: добавить элемент mapValue методом map.put() c ключом mapKey = null
+     * Ожидаемый результат: метод map.get(mapKey) вернёт значение mapValue
+     */
+
+    @ParameterizedTest
+    @ValueSource(strings = {"bob", "egor"})
+    public void nullKey(String mapValue) {
+        map.put(null, mapValue);
+        assertThat(map.get(null)).isEqualTo(mapValue);
+    }
+
+    /**
+     * Проверка начального значения
+     * Действия: вызвать метод map.get(key)
+     * Ожидаемый результат: Вернётся значение null
+     */
+
+    @Test
+    void startValue() {
+        assertThat(map.get("key")).isNull();
+    }
+
+
+    /**
+     * Проверка, что ключом может быть значение типа double
+     * Действия: создать mapDouble<Double, String> - экземпляр класса HashMap,
+     * добавить элемент mapValue методом mapDouble.put() с ключом mapKey = double
+     * Ожидаемый результат: метод mapInt.get(mapKey) вернёт значение mapValue
+     */
+
+    @Test
+    public void doubleKey(){
+        HashMap<Double, String> mapDouble = new HashMap<>();
+        mapDouble.put(1.0, "123");
+        assertThat(mapDouble.get(1.0)).isEqualTo("123");
+    }
+
+
+    /**
+     * Проверка, что можно добавлять каждому ключу своё значение
+     * Действия: добавить элемент value1 методом map.put(key1),
+     * добавить элемент value2 методом map.put(key2)
+     * Ожидаемый результат: map.get(key1) вернёт value1, map.get(key2) вернёт value2
+     */
+
+    @Test
+    public void twoKeyAndValue(){
+        String key1 = "key1", key2 = "key2", value1 = "value1", value2 = "value2";
+        map.put(key1, value1);
+        map.put(key2, value2);
+
+        assertThat(map.get(key1)).isEqualTo(value1);
+        assertThat(map.get(key2)).isEqualTo(value2);
+    }
+
+    /**
+     * Проверка, что метод map.get() не изменяет значение value
+     * Действия: добавить элемент window методом map.put() с ключом mapKey,
+     * Вызвать два раза метод map.get()
+     * Ожидаемый результат: значения равны
+     */
+
+    @Test
+    public void checkReplaceGet() {
+        String mapKey = "key";
+        map.put(mapKey, "window");
+        assertThat(map.get(mapKey)).isEqualTo(map.get(mapKey));
+    }
+
+}
