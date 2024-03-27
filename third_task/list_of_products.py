@@ -23,7 +23,7 @@ class ProductPurchase(QWidget):
         self.spinboxes = []
 
         for product, price in self.products.items():
-            checkbox = QCheckBox(f"{product} - {price:.2f} руб.")  # Форматируем цену до двух знаков после запятой
+            checkbox = QCheckBox(f"{product} - {price:.2f} руб.")
             layout.addWidget(checkbox)
             self.checkboxes.append(checkbox)
 
