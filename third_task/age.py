@@ -1,20 +1,31 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDateEdit, QTextEdit, QPushButton
-from PySide6.QtCore import QDate, QDateTime
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDateTimeEdit, QTextEdit, QPushButton
+from PySide6.QtGui import QGuiApplication
+from PySide6.QtCore import QDateTime
 
 
 class AgeCalculator(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Расчет возраста")
-        self.setGeometry(300, 300, 300, 200)
+
+        screen = QGuiApplication.primaryScreen()
+        screen_geometry = screen.availableGeometry()
+
+        window_width = 300
+        window_height = 200
+        window_x = screen_geometry.width() // 2 - window_width // 2
+        window_y = screen_geometry.height() // 2 - window_height // 2
+
+        self.setGeometry(window_x, window_y, window_width, window_height)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        self.birth_date_edit = QDateEdit()
+        self.birth_date_edit = QDateTimeEdit()
+        self.birth_date_edit.setDisplayFormat("yyyy.MM.dd hh:mm")
         self.birth_date_edit.setCalendarPopup(True)
-        self.birth_date_edit.setDate(QDate.currentDate())
+        self.birth_date_edit.setDateTime(QDateTime.currentDateTime())
         layout.addWidget(QLabel("Дата рождения:"))
         layout.addWidget(self.birth_date_edit)
 
@@ -27,19 +38,22 @@ class AgeCalculator(QWidget):
         layout.addWidget(self.result_textedit)
 
     def calculate_age(self):
-        birth_date = self.birth_date_edit.date()
+        birth_datetime = self.birth_date_edit.dateTime()
         current_datetime = QDateTime.currentDateTime()
 
-        age_seconds = birth_date.daysTo(current_datetime.date()) * 24 * 60 * 60
+        age_seconds = birth_datetime.secsTo(current_datetime)
 
         age_years = age_seconds // (365 * 24 * 60 * 60)
         age_seconds %= (365 * 24 * 60 * 60)
         age_hours = age_seconds // (60 * 60)
         age_seconds %= (60 * 60)
+        age_minutes = age_seconds // 60
+        age_seconds %= 60
 
-        result_text = f"Возраст: {age_years} лет\n"
-        result_text += f"Возраст: {age_hours} часов\n"
-        result_text += f"Возраст: {age_seconds} секунд"
+        result_text = f"Лет: {age_years}\n"
+        result_text += f"Часов: {age_hours}\n"
+        result_text += f"Минут: {age_minutes}\n"
+        result_text += f"Секунд: {age_seconds}"
 
         self.result_textedit.setText(result_text)
 
