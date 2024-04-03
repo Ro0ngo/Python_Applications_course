@@ -1,4 +1,6 @@
 import sys
+
+from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QLabel, QDoubleSpinBox, QPushButton
 
 
@@ -6,7 +8,15 @@ class ProductPurchase(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Покупка продуктов")
-        self.setGeometry(300, 300, 300, 300)
+        screen = QGuiApplication.primaryScreen()
+        screen_geometry = screen.availableGeometry()
+
+        window_width = 300
+        window_height = 200
+        window_x = screen_geometry.width() // 2 - window_width // 2
+        window_y = screen_geometry.height() // 2 - window_height // 2
+
+        self.setGeometry(window_x, window_y, window_width, window_height)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
