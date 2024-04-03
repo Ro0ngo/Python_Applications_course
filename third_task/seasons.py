@@ -12,7 +12,7 @@ class SeasonInfo(QWidget):
         screen = QGuiApplication.primaryScreen()
         screen_geometry = screen.availableGeometry()
 
-        window_width = 300
+        window_width = 450
         window_height = 200
         window_x = screen_geometry.width() // 2 - window_width // 2
         window_y = screen_geometry.height() // 2 - window_height // 2
